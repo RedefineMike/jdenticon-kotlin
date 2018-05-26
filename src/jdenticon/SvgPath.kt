@@ -14,10 +14,10 @@ class SvgPath {
         this.dataString += dataString + "Z"
     }
 
-    fun addCircle(point: Point, diameter: Float, counterClockwise: Boolean) {
-        var sweepFlag = if (counterClockwise != null) 0 else 1
-        var svgRadius = svgValue(diameter / 2f)
-        var svgDiameter = svgValue(diameter)
+    fun addCircle(point: Point, diameter: Float, counterClockwise: Boolean?) {
+        val sweepFlag = if (counterClockwise != null) 0 else 1
+        val svgRadius = svgValue(diameter / 2f)
+        val svgDiameter = svgValue(diameter)
 
         this.dataString +=
                 "M" + svgValue(point.x) + " " + svgValue(point.y + diameter / 2f) +

@@ -31,14 +31,14 @@ class Color {
         }
 
         fun parse(color: String) : String {
-            var re = Regex("^#[0-9a-f]{3,8}$", RegexOption.IGNORE_CASE)
+            val re = Regex("^#[0-9a-f]{3,8}$", RegexOption.IGNORE_CASE)
             if (re.matches(color)) {
                 if (color.length < 6) {
-                    var r = color[1]
-                    var g = color[2]
-                    var b = color[3]
-                    var a = if (color.length > 4) color[4] else ""
-                    return "#" + r + r + g + g + b + b + a + a
+                    val r = color[1]
+                    val g = color[2]
+                    val b = color[3]
+                    val a = if (color.length > 4) color[4] else 'F'
+                    return "#$r$r$g$g$b$b$a$a"
                 }
                 if (color.length == 7 || color.length > 8) {
                     return color
@@ -51,15 +51,15 @@ class Color {
          * @param hexColor  Color on the format "#RRGGBB" or "#RRGGBBAA"
          */
         fun toCss3(hexColor: String) : String {
-            var a = 1
+            val a:Int
             try {
-                var a = hexColor.substring(7, 2).toInt(16)
+                a = hexColor.substring(7, 2).toInt(16)
             } catch (e: NumberFormatException) {
                 return hexColor
             }
-            var r = hexColor.substring(1, 2).toInt(16)
-            var g = hexColor.substring(3, 2).toInt(16)
-            var b = hexColor.substring(5, 2).toInt(16)
+            val r = hexColor.substring(1, 2).toInt(16)
+            val g = hexColor.substring(3, 2).toInt(16)
+            val b = hexColor.substring(5, 2).toInt(16)
             return "rgba(" + r + "," + g + "," + b + "," + String.format("%02f", a / 255f) + ")"
         }
         /**
@@ -70,12 +70,12 @@ class Color {
         fun hsl(h: Float, s: Float, l: Float) : String {
             // Based on http://www.w3.org/TR/2011/REC-css3-color-20110607/#hsl-color
             if (s == 0f) {
-                var partialHex = decToHex(floor(l * 255f).toInt())
+                val partialHex = decToHex(floor(l * 255f).toInt())
                 return "#" + partialHex + partialHex + partialHex
             }
             else {
-                var m2 = if (l <= 0.5f)  l * (s + 1) else l + s - l * s
-                var m1 = l * 2 - m2
+                val m2 = if (l <= 0.5f)  l * (s + 1) else l + s - l * s
+                val m1 = l * 2 - m2
                 return "#" +
                         hueToRgb(m1, m2, (h * 6f + 2f)) +
                         hueToRgb(m1, m2, (h * 6f)) +
@@ -85,11 +85,11 @@ class Color {
         // This function will correct the lightness for the "dark" hues
         fun correctedHsl(h: Float, s: Float, l: Float) : String {
             // The corrector specifies the perceived middle lightnesses for each hue
-            var correctors = arrayOf( 0.55f, 0.5f, 0.5f, 0.46f, 0.6f, 0.55f, 0.55f )
-            var corrector = correctors[floor(h * 6 + 0.5).toInt()]
+            val correctors = arrayOf( 0.55f, 0.5f, 0.5f, 0.46f, 0.6f, 0.55f, 0.55f )
+            val corrector = correctors[floor(h * 6 + 0.5).toInt()]
 
             // Adjust the input lightness relative to the corrector
-            var l2 = if (l < 0.5f) l * corrector * 2f else corrector + (l - 0.5f) * (1f - corrector) * 2f
+            val l2 = if (l < 0.5f) l * corrector * 2f else corrector + (l - 0.5f) * (1f - corrector) * 2f
 
             return Color.hsl(h, s, l2)
         }

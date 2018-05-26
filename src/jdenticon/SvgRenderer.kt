@@ -1,31 +1,33 @@
 package jdenticon
 
-class SvgRenderer(target: SvgWriter) :Renderer {
+class SvgRenderer(val target: SvgWriter) :Renderer {
 
-    var _pathsByColor = HashMap<String, SvgPath>()
-    var _target = target
-    var size = target.size
+    val pathsByColor = HashMap<String, SvgPath>()
+    val size = target.size
+
     lateinit var _path: SvgPath
 
     override fun setBackground(fillColor: String) {
-        var re = Regex("^(#......)(..)?")
-        var match = re.matchEntire(fillColor)?.groups?.get(1)?.value
-        var opacityMatch = re.matchEntire(fillColor)?.groups?.get(2)?.value
-        var opacity = opacityMatch?.let {
+        val re = Regex("^(#......)(..)?")
+
+        val opacityMatch = re.matchEntire(fillColor)?.groups?.get(2)?.value
+        val opacity = opacityMatch?.let {
             opacityMatch.toInt(16) / 255f
         } ?: 1f
-        var colorMatch = re.matchEntire(fillColor)?.groups?.get(1)?.value
-        var color = colorMatch?.let {
+
+        val colorMatch = re.matchEntire(fillColor)?.groups?.get(1)?.value
+        val color = colorMatch?.let {
             colorMatch
         } ?: "000000"
-        this._target.setBackground(color, opacity)
+
+        this.target.setBackground(color, opacity)
     }
 
     override fun beginShape(color: String) {
-        if (this._pathsByColor[color] == null) {
-            this._pathsByColor[color] = SvgPath()
+        if (this.pathsByColor[color] == null) {
+            this.pathsByColor[color] = SvgPath()
         }
-        this._path = this._pathsByColor[color]!!
+        this._path = this.pathsByColor[color]!!
     }
 
     override fun endShape() {
@@ -41,8 +43,8 @@ class SvgRenderer(target: SvgWriter) :Renderer {
     }
 
     override fun finish() {
-        for (color in this._pathsByColor.keys) {
-            this._target.append(color, this._pathsByColor[color]!!.dataString)
+        for (color in this.pathsByColor.keys) {
+            this.target.append(color, this.pathsByColor[color]!!.dataString)
         }
     }
 }
